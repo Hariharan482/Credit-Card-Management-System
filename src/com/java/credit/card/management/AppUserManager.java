@@ -99,6 +99,7 @@ class AppUserManager {
         System.out.println("Enter the password for the new credit manager user account:");
         int userPassword=scanner.nextInt();
         AppUser user=new AppUser(identificationNumber,userPassword);
+        scanner.nextLine();
         if(this.addUser(user)) {
             return user.getUserId();
         }
@@ -106,6 +107,7 @@ class AppUserManager {
             System.out.println("There was a problem in getting userId.. Please try again later!!");
             return 0;
         }
+
     }
 
     protected void linkCustomerAccount(int userID,Customer customer){
@@ -125,5 +127,67 @@ class AppUserManager {
             }
         }
         return false;
+    }
+
+    private AppUser getAppUser(int appUserID){
+        for(AppUser user:userAccounts){
+            if(user.getUserId()==appUserID)
+                return user;
+        }
+        return null;
+    }
+
+    protected void getLinkedBankAccounts(int appUserID){
+        AppUser user=this.getAppUser(appUserID);
+        if(user==null) {
+            System.out.println("No such user");
+            return;
+        }
+        user.getCustomerAccounts();
+    }
+
+    protected void blockOrCancelCreditCard(int appUserID,int userPreference){
+        AppUser user=this.getAppUser(appUserID);
+        if(user==null) {
+            System.out.println("No such user");
+            return;
+        }
+        user.blockOrCancelCreditCard(userPreference);
+    }
+
+    protected void viewBalanceOfCreditCard(int appUserID){
+        AppUser user=this.getAppUser(appUserID);
+        if(user==null) {
+            System.out.println("No such user");
+            return;
+        }
+        user.viewBalanceOfCreditCard();
+    }
+
+    protected void depositAmountToCreditCard(int appUserID) {
+        AppUser user=this.getAppUser(appUserID);
+        if(user==null) {
+            System.out.println("No such user");
+            return;
+        }
+        user.depositAmountToCreditCard();
+    }
+
+    protected void changeCreditCardPIN(int appUserID) {
+        AppUser user=this.getAppUser(appUserID);
+        if(user==null) {
+            System.out.println("No such user");
+            return;
+        }
+        user.changeCreditCardPIN();
+    }
+
+    protected void spendMoney(int appUserID,int selectedSpendPreference) {
+        AppUser user=this.getAppUser(appUserID);
+        if(user==null) {
+            System.out.println("No such user");
+            return;
+        }
+        user.spendMoney(selectedSpendPreference);
     }
 }

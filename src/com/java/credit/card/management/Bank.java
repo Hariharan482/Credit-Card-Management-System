@@ -1,5 +1,11 @@
 package com.java.credit.card.management;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -11,7 +17,7 @@ class Bank {
     private int currentAvailableCustomerId=1;
     private int currentAvailableAdminId=1;
     private int rootPassword=999;
-    private final ArrayList<String> cardTypes;
+    private final ArrayList<CardType> cardTypes;
     private static long currentCreditCardNumber;
 
     Bank(){
@@ -94,11 +100,11 @@ class Bank {
         return null;
     }
 
-    public ArrayList<String> getCardTypes() {
+    public ArrayList<CardType> getCardTypes() {
         return cardTypes;
     }
 
-    public void addCardType(String cardType) {
+    public void addCardType(CardType cardType) {
         this.cardTypes.add(cardType);
     }
 
@@ -125,5 +131,45 @@ class Bank {
             }
         }
         System.out.println("No user accounts found to link!");
+    }
+
+    private void generateFile(ArrayList<CreditCard> cards,String fileName){
+        try(BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(fileName));) {
+            for(CreditCard card:cards) {
+                bufferedWriter.write("Card type:"+card.getCardType());
+                bufferedWriter.write(",Card number:"+card.getCardNumber());
+                bufferedWriter.write(",Card status:"+card.getStatus());
+                bufferedWriter.newLine();
+            }
+            System.out.println("File generated successfully!");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void retrieveBlockedOrClosedCards() {
+        ArrayList<CreditCard> blockedOrClosedCards = new ArrayList<>();
+        for (Customer customer : this.customers) {
+            for (CreditCard card : customer.getCreditCards()) {
+                if (card.getStatus() == CreditCardStatus.BLOCKED || card.getStatus() == CreditCardStatus.CLOSED) {
+                    blockedOrClosedCards.add(card);
+                }
+            }
+        }
+        try {
+            DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
+
+            String fileName=System.getProperty("user.dir")+"/Files/Blocked_Closed_CreditCards_"+LocalDateTime.now().format(dateTimeFormatter)+".txt";
+//            File file=new File(fileName);
+//            if(!file.exists() && file.createNewFile()){
+//                System.out.println(file.getAbsolutePath());
+                this.generateFile(blockedOrClosedCards,fileName);
+//            }
+//            else
+//                System.out.println("There exists a problem in generating file! Please try again later");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 }
