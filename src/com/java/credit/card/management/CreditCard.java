@@ -2,7 +2,7 @@ package com.java.credit.card.management;
 
 import java.util.Scanner;
 
-enum CreditCardStatus{
+enum CreditCardStatus {
     ACTIVE,
     BLOCKED,
     CLOSED
@@ -18,15 +18,15 @@ class CreditCard {
     private Bank bank;
     private String cardType;
 
-    public CreditCard(long cardNumber,int cvv,int pin,CreditCardStatus status,CardType cardType,Bank bank){
-        this.cardNumber=cardNumber;
-        this.cvv=cvv;
-        this.pin=pin;
-        this.status=status;
-        this.cardType=cardType.getCardTypeName();
-        this.limit=cardType.getCardLimit();
-        this.bank=bank;
-        this.balance=this.limit;
+    public CreditCard(long cardNumber, int cvv, int pin, CreditCardStatus status, CardType cardType, Bank bank) {
+        this.cardNumber = cardNumber;
+        this.cvv = cvv;
+        this.pin = pin;
+        this.status = status;
+        this.cardType = cardType.getCardTypeName();
+        this.limit = cardType.getCardLimit();
+        this.bank = bank;
+        this.balance = this.limit;
     }
 
     public long getCardNumber() {
@@ -49,49 +49,50 @@ class CreditCard {
         return status;
     }
 
-    private boolean verifyCVV(int inputCVV){
-        return this.cvv==inputCVV;
+    private boolean verifyCVV(int inputCVV) {
+        return this.cvv == inputCVV;
     }
 
     private boolean verifyPin(int inputPin) {
         return this.pin == inputPin;
     }
 
-    protected void changePin(int inputPin,int CVV){
+    protected void changePin(int inputPin, int CVV) {
         if (!verifyPin(inputPin) || !verifyCVV(CVV)) {
             System.out.println("Incorrect PIN/CVV.. PIN can't be changed");
             return;
         }
         System.out.println("Enter new PIN");
-        Scanner scanner=new Scanner(System.in);
-        this.pin= scanner.nextInt();
+        Scanner scanner = new Scanner(System.in);
+        this.pin = scanner.nextInt();
         System.out.println("PIN Successfully changed!!");
     }
 
-    protected void spend(int inputPin, long amount) {
+    protected boolean spend(int inputPin, long amount) {
         if (status != CreditCardStatus.ACTIVE) {
-            System.out.println("Card is "+status+"Cannot proceed with the transaction.");
-            return;
+            System.out.println("Card is " + status + "Cannot proceed with the transaction.");
+            return false;
         }
         if (amount <= 0) {
             System.out.println("Amount to spend greater than zero!");
-            return;
+            return false;
         }
         if (!verifyPin(inputPin)) {
             System.out.println("Incorrect PIN!!");
-            return;
+            return false;
         }
         if (balance < amount) {
             System.out.println("Insufficient balance!");
-            return;
+            return false;
         }
         balance -= amount;
         System.out.println("Successfully spent. Your remaining balance: " + balance);
+        return true;
     }
 
     protected void viewBalance(int inputPin) {
         if (verifyPin(inputPin)) {
-            System.out.println("Current balance of your credit card number-"+this.getCardNumber()+"is :"+balance);
+            System.out.println("Current balance of your credit card number-" + this.getCardNumber() + "is :" + balance);
         } else {
             System.out.println("Incorrect PIN.");
         }
@@ -115,12 +116,12 @@ class CreditCard {
     }
 
     private void updateCardStatus(int userPreference) {
-        CreditCardStatus newStatus=switch (userPreference){
-            case 1-> CreditCardStatus.CLOSED;
-            case 2-> CreditCardStatus.BLOCKED;
+        CreditCardStatus newStatus = switch (userPreference) {
+            case 1 -> CreditCardStatus.CLOSED;
+            case 2 -> CreditCardStatus.BLOCKED;
             default -> null;
         };
-        if(newStatus==null){
+        if (newStatus == null) {
             System.out.println("Invalid credit card status");
             return;
         }
@@ -128,11 +129,11 @@ class CreditCard {
         System.out.println("Card status updated to: " + this.status);
     }
 
-    protected void updateCardStatusByAdmin(int userPreference){
+    protected void updateCardStatusByAdmin(int userPreference) {
         this.updateCardStatus(userPreference);
     }
 
-    protected void updateCardStatusByCustomer(int userPreference,int inputPin){
+    protected void updateCardStatusByCustomer(int userPreference, int inputPin) {
         if (!verifyPin(inputPin)) {
             System.out.println("Incorrect PIN.");
             return;
