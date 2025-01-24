@@ -23,6 +23,10 @@ class ProductManager {
         availableProducts.addAll(abcVendor.getAvailableProducts());
         availableProducts.addAll(xyzVendor.getAvailableProducts());
         System.out.println();
+        if(availableProducts.isEmpty()){
+            System.out.println("No products available!");
+            return;
+        }
         this.listProductDetails(availableProducts);
         System.out.println("Select the product to add to cart");
         int selectedOption= UserInputValidation.getValidInteger();
@@ -36,6 +40,10 @@ class ProductManager {
 
     private void listProductsOfVendor(Vendor vendor, Cart cart) {
         ArrayList<Product> vendorProducts = vendor.getAvailableProducts();
+        if(vendorProducts.isEmpty()){
+            System.out.println("No products available!");
+            return;
+        }
         this.listProductDetails(vendorProducts);
         System.out.println("Select the product to add to cart");
         int selectedOption=UserInputValidation.getValidInteger();
