@@ -1,0 +1,2 @@
+Card type:Silver,Card number:620808164327,Card status:BLOCKED
+Card type:Silver,Card number:114562658922,Card status:BLOCKED
