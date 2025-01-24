@@ -2,9 +2,9 @@ package com.java.credit.card.management;
 
 import com.java.cart.management.Cart;
 import com.java.cart.management.ShopMart;
+import com.java.utils.UserInputValidation;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class AppUser extends User {
     private final int userId;
@@ -64,12 +64,11 @@ class AppUser extends User {
         for (Customer customer : userCustomerAccounts) {
             System.out.println((++i) + "-> " + customer.getBankOfCustomer() + ":" + customer.getAccountNumber());
         }
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption= UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userCustomerAccounts.size()) {
             Customer customer = userCustomerAccounts.get(selectedOption - 1);
             System.out.println("Enter Customer Account password");
-            int inputPassword = scanner.nextInt();
+            int inputPassword=UserInputValidation.getValidInteger();
             customer.getCustomerAccountDetails(inputPassword);
             return;
         }
@@ -99,12 +98,11 @@ class AppUser extends User {
         }
         ArrayList<CreditCard> userActiveCreditCards = this.getActiveCreditCardsOfLinkedAccounts();
         System.out.println("Select the card to be blocked/closed!");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userActiveCreditCards.size()) {
             CreditCard selectedCreditCard = userActiveCreditCards.get(selectedOption - 1);
             System.out.println("Enter Credit Card pin to proceed your operation");
-            int inputPin = scanner.nextInt();
+            int inputPin=UserInputValidation.getValidInteger();
             selectedCreditCard.updateCardStatusByCustomer(userPreference, inputPin);
             return;
         }
@@ -114,12 +112,11 @@ class AppUser extends User {
     protected void viewBalanceOfCreditCard() {
         ArrayList<CreditCard> userActiveCreditCards = this.getActiveCreditCardsOfLinkedAccounts();
         System.out.println("Select the card to view balance");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userActiveCreditCards.size()) {
             CreditCard selectedCreditCard = userActiveCreditCards.get(selectedOption - 1);
             System.out.println("Enter Credit Card pin to proceed your operation");
-            int inputPin = scanner.nextInt();
+            int inputPin=UserInputValidation.getValidInteger();
             selectedCreditCard.viewBalance(inputPin);
             return;
         }
@@ -129,14 +126,13 @@ class AppUser extends User {
     protected void depositAmountToCreditCard() {
         ArrayList<CreditCard> userActiveCreditCards = this.getActiveCreditCardsOfLinkedAccounts();
         System.out.println("Select the card to deposit ");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userActiveCreditCards.size()) {
             CreditCard selectedCreditCard = userActiveCreditCards.get(selectedOption - 1);
             System.out.println("Enter the amount to be deposited");
-            long depositAmount = scanner.nextLong();
+            long depositAmount=UserInputValidation.getValidLong();
             System.out.println("Enter Credit Card pin to proceed your operation");
-            int inputPin = scanner.nextInt();
+            int inputPin=UserInputValidation.getValidInteger();
             selectedCreditCard.deposit(inputPin, depositAmount);
             return;
         }
@@ -146,14 +142,13 @@ class AppUser extends User {
     protected void changeCreditCardPIN() {
         ArrayList<CreditCard> userActiveCreditCards = this.getActiveCreditCardsOfLinkedAccounts();
         System.out.println("Select the card to change PIN ");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userActiveCreditCards.size()) {
             CreditCard selectedCreditCard = userActiveCreditCards.get(selectedOption - 1);
             System.out.println("Enter Credit Card pin to proceed your operation");
-            int inputPin = scanner.nextInt();
+            int inputPin=UserInputValidation.getValidInteger();
             System.out.println("Enter CVV of your credit card");
-            int inputCVV = scanner.nextInt();
+            int inputCVV=UserInputValidation.getValidInteger();
             selectedCreditCard.changePin(inputPin, inputCVV);
             return;
         }
@@ -164,15 +159,16 @@ class AppUser extends User {
     private boolean payToVendor() {
         ArrayList<CreditCard> userActiveCreditCards = this.getActiveCreditCardsOfLinkedAccounts();
         System.out.println("Select the card to spend ");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userActiveCreditCards.size()) {
             CreditCard selectedCreditCard = userActiveCreditCards.get(selectedOption - 1);
             System.out.println("Enter the amount to be spend");
-            long depositAmount = scanner.nextLong();
+            long depositAmount=UserInputValidation.getValidLong();
             System.out.println("Enter Credit Card pin to proceed your operation");
-            int inputPin = scanner.nextInt();
-            return selectedCreditCard.spend(inputPin, depositAmount);
+            int inputPin=UserInputValidation.getValidInteger();
+            System.out.println("Enter CVV of your credit card");
+            int inputCVV=UserInputValidation.getValidInteger();
+            return selectedCreditCard.spend(inputPin, depositAmount,inputCVV);
         }
         System.out.println("Invalid selection!..Returning to customer menu!");
         return false;
@@ -208,13 +204,14 @@ class AppUser extends User {
     protected boolean buyProducts(long cartAmount) {
         ArrayList<CreditCard> userActiveCreditCards = this.getActiveCreditCardsOfLinkedAccounts();
         System.out.println("Select the card to spend");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= userActiveCreditCards.size()) {
             CreditCard selectedCreditCard = userActiveCreditCards.get(selectedOption - 1);
             System.out.println("Enter Credit Card pin to proceed your operation");
-            int inputPin = scanner.nextInt();
-            return selectedCreditCard.spend(inputPin, cartAmount);
+            int inputPin=UserInputValidation.getValidInteger();
+            System.out.println("Enter CVV of your credit card");
+            int inputCVV=UserInputValidation.getValidInteger();
+            return selectedCreditCard.spend(inputPin, cartAmount,inputCVV);
         }
         System.out.println("Invalid selection!..Returning to ShopMart menu!");
         return false;

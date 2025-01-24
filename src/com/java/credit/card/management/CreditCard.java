@@ -1,6 +1,6 @@
 package com.java.credit.card.management;
 
-import java.util.Scanner;
+import com.java.utils.UserInputValidation;
 
 enum CreditCardStatus {
     ACTIVE,
@@ -63,22 +63,21 @@ class CreditCard {
             return;
         }
         System.out.println("Enter new PIN");
-        Scanner scanner = new Scanner(System.in);
-        this.pin = scanner.nextInt();
+        this.pin= UserInputValidation.getValidInteger();
         System.out.println("PIN Successfully changed!!");
     }
 
-    protected boolean spend(int inputPin, long amount) {
+    protected boolean spend(int inputPin, long amount, int CVV) {
         if (status != CreditCardStatus.ACTIVE) {
-            System.out.println("Card is " + status + "Cannot proceed with the transaction.");
+            System.out.println("Card is " + status + "..! Cannot proceed with the transaction.");
             return false;
         }
         if (amount <= 0) {
-            System.out.println("Amount to spend greater than zero!");
+            System.out.println("Amount to be spend should be greater than zero!");
             return false;
         }
-        if (!verifyPin(inputPin)) {
-            System.out.println("Incorrect PIN!!");
+        if (!verifyPin(inputPin) || !verifyCVV(CVV)) {
+            System.out.println("Incorrect PIN/CVV..!!");
             return false;
         }
         if (balance < amount) {
@@ -94,7 +93,7 @@ class CreditCard {
         if (verifyPin(inputPin)) {
             System.out.println("Current balance of your credit card number-" + this.getCardNumber() + "is :" + balance);
         } else {
-            System.out.println("Incorrect PIN.");
+            System.out.println("Incorrect PIN..!!");
         }
     }
 
@@ -104,11 +103,16 @@ class CreditCard {
             return;
         }
         if (!verifyPin(inputPin)) {
-            System.out.println("Incorrect PIN.");
+            System.out.println("Incorrect PIN..!!");
             return;
         }
         if (status == CreditCardStatus.BLOCKED || status == CreditCardStatus.CLOSED) {
             System.out.println("Card is " + status + ". Cannot deposit.");
+            return;
+        }
+        long amountDue=this.limit-this.balance;
+        if(amountDue<amount){
+            System.out.println("The Amount "+amount+" is greater than the amount due "+amountDue+"..!Please double-check the payment amount.");
             return;
         }
         balance += amount;

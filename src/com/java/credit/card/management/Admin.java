@@ -1,8 +1,9 @@
 package com.java.credit.card.management;
 
+import com.java.utils.UserInputValidation;
+
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 class Admin extends User {
     private final int adminId;
@@ -23,11 +24,10 @@ class Admin extends User {
 
 
     public void addAdmin() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter admin name");
-        String adminName = scanner.nextLine();
+        String adminName= UserInputValidation.getValidString();
         System.out.println("Enter admin password");
-        int loginPassword = scanner.nextInt();
+        int loginPassword=UserInputValidation.getValidInteger();
         Admin admin = new Admin(this.bank, adminName, loginPassword);
         if (this.bank.addBankAdmin(admin)) {
             System.out.println("Admin successfully added");
@@ -38,18 +38,16 @@ class Admin extends User {
     }
 
     public void addCustomer() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter identification number");
-        long identificationNumber = scanner.nextLong();
+        long identificationNumber=UserInputValidation.getValidLong();
         int userId = this.generateUserAccountID(identificationNumber);
         if (userId == 0) {
             return;
         }
-        scanner.nextLine();
         System.out.println("Enter customer name");
-        String customerName = scanner.nextLine();
+        String customerName=UserInputValidation.getValidString();
         System.out.println("Enter customer password");
-        int loginPassword = scanner.nextInt();
+        int loginPassword=UserInputValidation.getValidInteger();
         int customerID = this.bank.getCurrentAvailableCustomerId();
         Customer customer = new Customer(userId, customerName, loginPassword, customerID, this.bank);
         if (bank.setCustomer(customer)) {
@@ -65,21 +63,29 @@ class Admin extends User {
     }
 
     public void viewAllCustomers() {
-        System.out.println("Customers of " + this.bank.getBankName());
-        String[] headers = {"Customer ID", "Customer Name"};
-        System.out.printf("%-15s %-15s%n", headers[0], headers[1]);
-        for (Customer customer : this.bank.getCustomers()) {
-            System.out.printf("%-15d %-15s%n", customer.getCustomerId(), customer.name);
+        if(!this.bank.getCustomers().isEmpty()){
+            System.out.println("Customers of " + this.bank.getBankName());
+            String[] headers = {"Customer ID", "Customer Name"};
+            System.out.printf("%-15s %-15s%n", headers[0], headers[1]);
+            for (Customer customer : this.bank.getCustomers()) {
+                System.out.printf("%-15d %-15s%n", customer.getCustomerId(), customer.name);
+            }
+            return;
         }
+        System.out.println("Add a customer to view data");
     }
 
     public void viewAllIssuedCreditCards() {
         System.out.println("Issued Credit Cards of " + this.bank.getBankName());
         for (Customer customer : this.bank.getCustomers()) {
-            String[] headers = {"Customer ID", "Customer Name", "Card Type", "Card Number", "Limit", "Balance", "Credit Card Status"};
-            System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s%n", headers[0], headers[1], headers[2], headers[3], headers[4], headers[5], headers[6]);
-            for (CreditCard creditCard : customer.getCreditCards()) {
-                System.out.printf("%-15d %-15s %-15s %-15s %-15s %-15s %-15s%n", customer.getCustomerId(), customer.name, creditCard.getCardType(), creditCard.getCardNumber(), creditCard.getLimit(), creditCard.getBalance(), creditCard.getStatus());
+            if(!customer.getCreditCards().isEmpty()){
+                String[] headers = {"Customer ID", "Customer Name", "Card Type", "Card Number", "Limit", "Balance", "Credit Card Status"};
+                System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s%n", headers[0], headers[1], headers[2], headers[3], headers[4], headers[5], headers[6]);
+                for (CreditCard creditCard : customer.getCreditCards()) {
+                    System.out.printf("%-15d %-15s %-15s %-15s %-15s %-15s %-15s%n", customer.getCustomerId(), customer.name, creditCard.getCardType(), creditCard.getCardNumber(), creditCard.getLimit(), creditCard.getBalance(), creditCard.getStatus());
+                }
+            }else {
+                System.out.println("Customer yet to have a credit card!");
             }
         }
     }
@@ -90,8 +96,7 @@ class Admin extends User {
 
     public void setPassword(int password) {
         System.out.println("Enter the current admin password to proceed");
-        Scanner scanner = new Scanner(System.in);
-        int userEnteredPassword = scanner.nextInt();
+        int userEnteredPassword=UserInputValidation.getValidInteger();
         if (this.validatePassword(userEnteredPassword)) {
             this.password = password;
             System.out.println("Password Successfully changed!!");
@@ -122,15 +127,14 @@ class Admin extends User {
             for (CardType cardType : cardTypes) {
                 System.out.println((i++) + "." + cardType.getCardTypeName());
             }
-            Scanner scanner = new Scanner(System.in);
-            int selectedOption = scanner.nextInt();
+            int selectedOption=UserInputValidation.getValidInteger();
             CardType cardType = cardTypes.get(selectedOption - 1);
             System.out.println("CARD TYPE : " + cardType.getCardTypeName());
             System.out.println("CARD NUMBER : " + creditCardNumber);
             System.out.println("CARD CVV : " + cvv);
             System.out.println("CARD SECRET PIN : " + secretPin);
             System.out.println("Press 1 to issue this card to customer");
-            int keyPressed = scanner.nextInt();
+            int keyPressed=UserInputValidation.getValidInteger();
             if (keyPressed == 1) {
                 CreditCard creditCard = new CreditCard(creditCardNumber, cvv, secretPin, CreditCardStatus.ACTIVE, cardType, this.bank);
                 customer.addCreditCard(creditCard);
@@ -146,13 +150,16 @@ class Admin extends User {
         Customer customer = this.bank.isUserHavingAccount(customerID);
         if (customer != null) {
             ArrayList<CreditCard> customerCards = customer.getActiveCreditCards();
+            if(customerCards.isEmpty()){
+                System.out.println("Customer doesn't have Credit Cards to block");
+                return;
+            }
             int numberOfCards = 0;
             for (CreditCard creditCard : customerCards) {
                 System.out.println((++numberOfCards) + "->" + creditCard.getCardType() + ":" + creditCard.getCardNumber());
             }
             System.out.println("Select the card to be blocked/closed!");
-            Scanner scanner = new Scanner(System.in);
-            int selectedOption = scanner.nextInt();
+            int selectedOption=UserInputValidation.getValidInteger();
             if (selectedOption > 0 && selectedOption <= numberOfCards) {
                 CreditCard selectedCreditCard = customerCards.get(selectedOption - 1);
                 selectedCreditCard.updateCardStatusByAdmin(userPreference);

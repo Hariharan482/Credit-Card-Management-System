@@ -3,6 +3,7 @@ package com.java.cart.management;
 import com.java.credit.card.management.CreditManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Cart {
     private final ArrayList<Product> cartItems;
@@ -51,9 +52,11 @@ public class Cart {
     }
 
     private void updateCart() {
-        for (Product product : this.cartItems) {
+        Iterator<Product> iterator = this.cartItems.iterator();
+        while (iterator.hasNext()){
+            Product product=iterator.next();
             product.decreaseProductStocks();
-            this.cartItems.remove(product);
+            iterator.remove();
         }
     }
 

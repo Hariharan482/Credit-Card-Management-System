@@ -1,5 +1,7 @@
 package com.java.credit.card.management;
 
+import com.java.utils.UserInputValidation;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
+
 
 class Bank {
     public String bankName;
@@ -77,8 +79,7 @@ class Bank {
 
     public boolean checkRootUser() {
         System.out.println("Enter the current bank root user password to proceed");
-        Scanner scanner = new Scanner(System.in);
-        int userEnteredPassword = scanner.nextInt();
+        int userEnteredPassword= UserInputValidation.getValidInteger();
         return userEnteredPassword == rootPassword;
     }
 
@@ -158,6 +159,10 @@ class Bank {
         try {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
             String fileName = System.getProperty("user.dir") + "/Files/Blocked_Closed_CreditCards_" + LocalDateTime.now().format(dateTimeFormatter) + ".txt";
+            if(blockedOrClosedCards.isEmpty()){
+                System.out.println("No cards are blocked/Closed");
+                return;
+            }
             this.generateFile(blockedOrClosedCards, fileName);
         } catch (Exception e) {
             System.out.println(e.getMessage());

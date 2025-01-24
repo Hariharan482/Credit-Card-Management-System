@@ -1,12 +1,12 @@
 package com.java.cart.management;
 
+import com.java.utils.UserInputValidation;
+
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class ProductManager {
     private static ABCVendor abcVendor = new ABCVendor();
     private static XYZVendor xyzVendor = new XYZVendor();
-    private final Scanner scanner = new Scanner(System.in);
 
     private void listProductDetails(ArrayList<Product> availableProducts) {
         System.out.println();
@@ -25,8 +25,7 @@ class ProductManager {
         System.out.println();
         this.listProductDetails(availableProducts);
         System.out.println("Select the product to add to cart");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption= UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= availableProducts.size()) {
             cart.addToCart(availableProducts.get(selectedOption - 1));
             System.out.println("Product added to cart!");
@@ -39,8 +38,7 @@ class ProductManager {
         ArrayList<Product> vendorProducts = vendor.getAvailableProducts();
         this.listProductDetails(vendorProducts);
         System.out.println("Select the product to add to cart");
-        Scanner scanner = new Scanner(System.in);
-        int selectedOption = scanner.nextInt();
+        int selectedOption=UserInputValidation.getValidInteger();
         if (selectedOption > 0 && selectedOption <= vendorProducts.size()) {
             cart.addToCart(vendorProducts.get(selectedOption - 1));
             System.out.println("Product added to cart!");
@@ -62,8 +60,7 @@ class ProductManager {
         this.listProductDetails(cart.getCartItems());
         if (!cart.getCartItems().isEmpty()) {
             System.out.println("Select the product to remove from cart");
-            Scanner scanner = new Scanner(System.in);
-            int selectedOption = scanner.nextInt();
+            int selectedOption=UserInputValidation.getValidInteger();
             if (selectedOption > 0 && selectedOption <= cart.getCartItems().size()) {
                 cart.removeFromCart(cart.getCartItems().get(selectedOption - 1));
                 System.out.println("Product removed from cart!");
@@ -84,7 +81,7 @@ class ProductManager {
             System.out.println("3-> Empty Cart");
             System.out.println("4-> Buy all products");
             System.out.println("0-> Returning back to main menu");
-            int operation = scanner.nextInt();
+            int operation=UserInputValidation.getValidInteger();
             switch (operation) {
                 case 1:
                     ArrayList<Product> selectedProducts = cart.getCartItems();
@@ -119,7 +116,7 @@ class ProductManager {
             System.out.println("2-> List vendor specific products");
             System.out.println("3-> Get Cart Items");
             System.out.println("0-> Exit");
-            int operation = scanner.nextInt();
+            int operation=UserInputValidation.getValidInteger();
             switch (operation) {
                 case 1:
                     this.listAllProducts(cart);
@@ -129,7 +126,7 @@ class ProductManager {
                     System.out.println("1-> ABC Vendor");
                     System.out.println("2-> XYZ Vendor");
                     System.out.println("Press any key to return back to ShopMart main menu");
-                    int userPreference = scanner.nextInt();
+                    int userPreference=UserInputValidation.getValidInteger();
                     if (userPreference == 1) {
                         this.listProductsOfVendor(abcVendor, cart);
                     } else if (userPreference == 2) {

@@ -1,7 +1,8 @@
 package com.java.credit.card.management;
 
+import com.java.utils.UserInputValidation;
+
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class AppUserManager {
     private static final ArrayList<AppUser> userAccounts = new ArrayList<>();
@@ -25,8 +26,7 @@ class AppUserManager {
 
     public boolean checkRootUser() {
         System.out.println("Enter the current root password to proceed");
-        Scanner scanner = new Scanner(System.in);
-        int userEnteredPassword = scanner.nextInt();
+        int userEnteredPassword= UserInputValidation.getValidInteger();
         return userEnteredPassword == rootPassword;
     }
 
@@ -53,11 +53,10 @@ class AppUserManager {
 
     protected void addBankAdministrator(Bank bank) {
         if (this.checkRootUser()) {
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Enter the name of Admin:");
-            String name = scanner.nextLine();
+            String name=UserInputValidation.getValidString();
             System.out.println("Enter the password:");
-            int password = scanner.nextInt();
+            int password=UserInputValidation.getValidInteger();
             Admin admin = new Admin(bank, name, password);
             if (bank.addBankAdmin(admin)) {
                 System.out.println("Admin ID: " + admin.getAdminId() + " for Bank " + bank.getBankName() + " is Successfully Added!");
@@ -73,9 +72,8 @@ class AppUserManager {
         if (isExistingUser(identificationNumber)) {
             return false;
         }
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the password for the new credit manager user account:");
-        int userPassword = scanner.nextInt();
+        int userPassword=UserInputValidation.getValidInteger();
         return this.addUser(new AppUser(identificationNumber, userPassword));
     }
 
@@ -93,11 +91,9 @@ class AppUserManager {
                 return userAccount.getUserId();
             }
         }
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the password for the new credit manager user account:");
-        int userPassword = scanner.nextInt();
+        int userPassword=UserInputValidation.getValidInteger();
         AppUser user = new AppUser(identificationNumber, userPassword);
-        scanner.nextLine();
         if (this.addUser(user)) {
             return user.getUserId();
         } else {

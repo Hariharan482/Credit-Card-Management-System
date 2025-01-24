@@ -1,8 +1,10 @@
 package com.java.credit.card.management;
 
+import com.java.utils.UserInputValidation;
+
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
+
 
 class Customer extends User {
     private final ArrayList<CreditCard> creditCards;
@@ -69,8 +71,7 @@ class Customer extends User {
 
     public void setPassword(int password) {
         System.out.println("Enter the current customer password to proceed");
-        Scanner scanner = new Scanner(System.in);
-        int userEnteredPassword = scanner.nextInt();
+        int userEnteredPassword= UserInputValidation.getValidInteger();
         if (this.validatePassword(userEnteredPassword)) {
             this.password = password;
             System.out.println("Password Successfully changed!!");
